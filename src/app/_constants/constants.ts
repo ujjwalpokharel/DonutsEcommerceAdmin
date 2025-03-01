@@ -2,9 +2,10 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const constants = {
   loginUrl: `${apiUrl}/auth/login`,
-  category: `category`,
-  products: "products",
-  slider: "product-slider-image",
-  customer: "customer",
-  order: "order",
+  signupUrl: `${apiUrl}/admins`,
+  category: `${apiUrl}/category`,
+  products: `${apiUrl}/products`,
+  slider: `${apiUrl}/product-slider-image`,
+  customer: `${apiUrl}/customer`,
+  order: `${apiUrl}/order`,
 };

@@ -1,9 +1,10 @@
 "use client";
 import "./globals.css";
-import React from "react";
+import React, { useEffect } from "react";
 import type { MenuProps } from "antd";
 import { Layout, Menu } from "antd";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 const { Content, Sider } = Layout;
 
@@ -18,38 +19,82 @@ const siderStyle: React.CSSProperties = {
   scrollbarColor: "unset",
 };
 
-const items: MenuProps["items"] = [
-  { key: "/category", label: "Category" },
-  { key: "/products", label: "Products" },
-  { key: "/order", label: "Orders" },
-];
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const LogOut = () => {
+    localStorage.removeItem("accessToken");
+    router.push("/login");
+  };
+
+  const items = [
+    {
+      label: (
+        <Link href={"/category"} className="text-lg">
+          Category
+        </Link>
+      ),
+      key: "Category",
+    },
+    {
+      label: (
+        <Link href={"/products"} className="text-lg">
+          Products
+        </Link>
+      ),
+      key: "products",
+    },
+    {
+      label: (
+        <Link href={"/order"} className="text-lg">
+          Orders
+        </Link>
+      ),
+      key: "Orders",
+    },
+    // {
+    //   label: (
+    //     <div className="flex justify-center text-white pr-10 underline items-end pt-5">
+    //       <p onClick={LogOut}>Log Out</p>
+    //     </div>
+    //   ),
+    //   key: "logout",
+    // },
+  ];
   const router = useRouter();
   const pathname = usePathname();
-  const menuHandler: MenuProps["onClick"] = (e) => {
-    router.push(e.key);
-  };
+
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
+  useEffect(() => {
+    if (!token) {
+      if (typeof window !== "undefined") {
+        router.push(`/login`);
+      }
+    }
+  }, [token]);
 
   return (
     <html lang="en">
       <body>
-        {pathname === "/login" ? (
+        {pathname === "/login" || pathname === "/signup" ? (
           <div>{children}</div>
         ) : (
           <Layout hasSider>
             <Sider style={siderStyle}>
               <Menu
-                onClick={menuHandler}
                 theme="dark"
                 mode="inline"
                 items={items}
-                className="pt-4"
+                className="pt-4 "
               />
+              <div className=" absolute bottom-0 text-lg text-white pb-10 pl-10 underline  ">
+                <p className="cursor-pointer" onClick={LogOut}>
+                  Log Out
+                </p>
+              </div>
             </Sider>
             <Layout style={{ marginInlineStart: 200 }}>
               <Content
